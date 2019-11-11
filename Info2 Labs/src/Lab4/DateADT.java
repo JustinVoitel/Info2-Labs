@@ -19,7 +19,7 @@ public interface DateADT {
 	public int getMinute();
 	public int getHour();
 	
-	public double getDate();
+	public double getDays();
 	public double getTime();
 	public double getFullDate();
 	

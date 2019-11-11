@@ -14,11 +14,18 @@ public class JuliaDate implements DateADT {
 	private int minute = 0;
 	private int hour = 12;
 	
+	private boolean gregorian = true;
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		JuliaDate date = new JuliaDate();
+		//JuliaDate date = new JuliaDate(11,11,2019,11,21,35);
+		//JuliaDate date = new JuliaDate(31,12,1899,19,31,28);
+		//JuliaDate date = new JuliaDate(15,10,1582,0,0,0);
+		//JuliaDate date = new JuliaDate(1,1,2000,12,0,0);
+		JuliaDate date = new JuliaDate(1,1,1,0,0,0);
 		double days = date.getFullDate();
 		System.out.println(days);
+		
 	}
 	
 	public JuliaDate() {
@@ -45,9 +52,7 @@ public class JuliaDate implements DateADT {
 	}
 	
 	public double calculateDays() {
-		
-		double JD;
-		int Y,M,D,B;
+		double JD, Y,M,D,B;
 		if(this.month > 2) {
 			Y = this.year;
 			M = this.month;
@@ -57,21 +62,15 @@ public class JuliaDate implements DateADT {
 		}
 		
 		D = this.day;
+		B = this.gregorian ? 2 - Math.floor(Y/100) + Math.floor(Y/400) : 0;
+		JD = Math.floor(365.25*(Y+4716)) + Math.floor(30.6001*(M+1)) + D + B - 1524.5;
 		
-		B = 2 - (Y/100) + (Y/400);
-		
-		JD = (365.25*(Y+4716)) + (30.6001*(M+1)) + D + B - 1524.5;
-		
-		return Math.floor(JD);
+		return JD;
 	}
 	
 	public double calculateFraction() {
-		double hour = this.hour;
-		hour -= 12;
-		
-		double fraction = (hour/24) + ((double)this.minute/1440) + ((double)this.second/86400);
+		double fraction = ((double)hour/24) + ((double)this.minute/1440) + ((double)this.second/86400);
 		DecimalFormat df =new DecimalFormat("0.00000");
-		System.out.println(hour/24);
 		return Double.parseDouble(df.format(fraction));
 	}
 	
@@ -189,9 +188,10 @@ public class JuliaDate implements DateADT {
 		this.setMinute(time.getMinute());
 		this.setHour(time.getHour());
 	}
+	
 
 	@Override
-	public double getDate() {
+	public double getDays() {
 		double days = this.calculateDays();		
 		return days;
 	}
@@ -206,8 +206,18 @@ public class JuliaDate implements DateADT {
 	public double getFullDate() {
 		double days = this.calculateDays();
 		double fraction = this.calculateFraction();
+//		System.out.println(days);
+//		System.out.println(fraction);
 		
 		return days + fraction;
+	}
+
+	public boolean isGregorian() {
+		return gregorian;
+	}
+
+	public void setGregorian(boolean gregorian) {
+		this.gregorian = gregorian;
 	}
 
 }
