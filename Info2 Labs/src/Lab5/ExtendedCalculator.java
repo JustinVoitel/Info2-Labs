@@ -58,7 +58,11 @@ public class ExtendedCalculator extends Calculator {
 	}
 	
 	public void setHexaMode(boolean isHexa) {
-		
+		if(isHexa) {
+			this.mode = CalculatorMode.HEXA;
+		}else {
+			this.mode = CalculatorMode.DECIMAL;
+		}
 	}
 
 }
