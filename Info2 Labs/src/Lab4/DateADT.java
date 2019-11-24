@@ -25,4 +25,9 @@ public interface DateADT {
 	
 	
 	public void now();
+	
+	
+	
 }
+
+
