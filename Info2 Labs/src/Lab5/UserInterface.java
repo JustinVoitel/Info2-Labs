@@ -126,9 +126,7 @@ public class UserInterface
         else if(command.equals("C")) {
             calc.clear();
         }
-//        else if(command.equals("?")) {
-//            showInfo();
-//        }
+
         else if(command.equals("*")) {
             calc.multiply();
         }
