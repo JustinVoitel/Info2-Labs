@@ -99,6 +99,7 @@ public class UserInterface
      */
     public void actionPerformed(ActionEvent event)
     {
+    	System.out.println("action");
         String command = event.getActionCommand();
 
         if(command.equals("0") ||

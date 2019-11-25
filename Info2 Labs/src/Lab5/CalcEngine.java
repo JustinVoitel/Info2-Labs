@@ -87,6 +87,9 @@ public class CalcEngine
         // This should completes the building of a second operand,
         // so ensure that we really have a left operand, an operator
         // and a right operand.
+    	
+    	
+    	
         if(haveLeftOperand &&
                 lastOperator != '?' &&
                 buildingDisplayValue) {

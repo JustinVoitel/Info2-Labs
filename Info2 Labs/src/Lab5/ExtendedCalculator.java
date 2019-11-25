@@ -39,14 +39,6 @@ public class ExtendedCalculator extends Calculator {
 
 	}
 
-	public int hexaToDecimal(String hexa) {
-		return Integer.parseInt(hexa, 16);
-	}
-
-	public String decimalToHexa(int decimal) {
-		return Integer.toHexString(decimal);
-	}
-
 	/**
 	 * adds buttons with the given button labels to the container and adds a action
 	 * to each button 
@@ -59,13 +51,8 @@ public class ExtendedCalculator extends Calculator {
 		ActionListener action = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String command = e.getActionCommand();
-
-				//gui.calc.numberPressed(hexaToDecimal(command));
-				ExtendedCalculator.this.hexaPressed(command);
-				
+				ExtendedCalculator.this.numberPressed(e.getActionCommand());
 				ExtendedCalculator.this.redisplay();
-
 			}
 		};
 
@@ -77,16 +64,6 @@ public class ExtendedCalculator extends Calculator {
 			ctn.add(button);
 		}
 
-	}
-	
-	public void hexaPressed(String hexa) {
-		if(engine.buildingDisplayValue) {
-			String combinedHexa = decimalToHexa(engine.displayValue) + hexa;
-			engine.displayValue = hexaToDecimal(combinedHexa);
-		}else {
-			engine.displayValue = hexaToDecimal(hexa);
-			engine.buildingDisplayValue = true;
-		}
 	}
 
 	/**
@@ -120,7 +97,42 @@ public class ExtendedCalculator extends Calculator {
 		ActionListener action = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ExtendedCalculator.this.redisplay();
+				
+				String command = e.getActionCommand();
+
+		        if(command.equals("0") ||
+		           command.equals("1") ||
+		           command.equals("2") ||
+		           command.equals("3") ||
+		           command.equals("4") ||
+		           command.equals("5") ||
+		           command.equals("6") ||
+		           command.equals("7") ||
+		           command.equals("8") ||
+		           command.equals("9")) {
+		            ExtendedCalculator.this.numberPressed(command);
+		        }
+		        else if(command.equals("+")) {
+		        	ExtendedCalculator.this.engine.plus();
+		        }
+		        else if(command.equals("-")) {
+		        	ExtendedCalculator.this.engine.minus();
+		        }
+		        else if(command.equals("=")) {
+		        	ExtendedCalculator.this.engine.equals();
+		        }
+		        else if(command.equals("C")) {
+		        	ExtendedCalculator.this.engine.clear();
+		        }
+
+		        else if(command.equals("*")) {
+		        	ExtendedCalculator.this.engine.multiply();
+		        }
+		        else if(command.equals("/")) {
+		        	ExtendedCalculator.this.engine.divide();
+		        }
+		        
+		        ExtendedCalculator.this.redisplay();
 			}
 		};
 
@@ -129,14 +141,19 @@ public class ExtendedCalculator extends Calculator {
 		JPanel c = (JPanel) contentPane.getComponent(1);
 		for (Component button : c.getComponents()) {
 			if (button instanceof JButton) {
-				// swap the position of the actionlisteners, so the redisplay of this class gets
-				// triggered at last
 				ActionListener[] al = ((JButton) button).getActionListeners();
 				((JButton) button).removeActionListener(al[0]);
 				((JButton) button).addActionListener(action);
-				((JButton) button).addActionListener(al[0]);
 			}
 		}
+	}
+	
+	public int hexaToDecimal(String hexa) {
+		return Integer.parseInt(hexa, 16);
+	}
+
+	public String decimalToHexa(int decimal) {
+		return Integer.toHexString(decimal);
 	}
 
 	public void setHexaMode(boolean isHexa) {
@@ -146,7 +163,7 @@ public class ExtendedCalculator extends Calculator {
 			this.mode = CalculatorMode.DECIMAL;
 		}
 		setHexaButtonsEnabled(isHexa);
-		this.redisplay();
+		this.redisplay();;
 	}
 
 	public void setHexaButtonsEnabled(boolean isHexa) {
@@ -162,11 +179,38 @@ public class ExtendedCalculator extends Calculator {
 		}
 	}
 
+	public void numberPressed(String command) {
+		switch (this.mode) {
+		case HEXA:
+			if(engine.buildingDisplayValue) {
+				String combinedHexa = decimalToHexa(engine.displayValue) + command;
+				engine.displayValue = hexaToDecimal(combinedHexa);
+			}else {
+				engine.displayValue = hexaToDecimal(command);
+				engine.buildingDisplayValue = true;
+			}
+			break;
+		case DECIMAL:
+			this.engine.numberPressed(Integer.parseInt(command));
+			break;
+		default:
+			break;
+		}
+	}
+	
 	public void redisplay() {
-		if (this.mode.equals(CalculatorMode.HEXA)) {
-			gui.display.setText("" + decimalToHexa(this.engine.getDisplayValue()));
-		} else if (this.mode.equals(CalculatorMode.DECIMAL)) {
+		switch (this.mode) {
+		case HEXA:
+			gui.display.setText("" + decimalToHexa(this.engine.getDisplayValue()));			
+			break;
+		case DECIMAL:
 			gui.display.setText("" + this.engine.getDisplayValue());
+			break;
+			
+		default:
+			
+			break;
+			
 		}
 	}
 
