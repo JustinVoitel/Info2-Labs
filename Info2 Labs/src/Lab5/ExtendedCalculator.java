@@ -21,7 +21,6 @@ public class ExtendedCalculator extends Calculator {
 		this.mode = CalculatorMode.DECIMAL;
 		makeHexaPanel();
 		changeButtonAction();
-
 	}
 
 	public static void main(String[] args) {
@@ -48,7 +47,6 @@ public class ExtendedCalculator extends Calculator {
 	 * @param buttons
 	 */
 	public void fillHexaButtons(Container ctn, String[] buttons) {
-
 		ActionListener action = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -58,18 +56,16 @@ public class ExtendedCalculator extends Calculator {
 		};
 
 		for (String caption : buttons) {
-
 			JButton button = new JButton(caption);
 			button.addActionListener(action);
 			button.setEnabled(this.mode.equals(CalculatorMode.HEXA));
 			ctn.add(button);
 		}
-
 	}
 
 	/**
-	 * Adds the mode options to the given container. When the checkbox is clicked,
-	 * the
+	 * Adds the mode options to the given container. When the option is clicked, a
+	 * custon ActionListener gets triggerd
 	 * 
 	 * @param panel
 	 * @param label
@@ -141,7 +137,6 @@ public class ExtendedCalculator extends Calculator {
 		ActionListener action = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
 				String command = e.getActionCommand();
 
 				if (isDecimalNumber(command)) {
@@ -154,20 +149,16 @@ public class ExtendedCalculator extends Calculator {
 					ExtendedCalculator.this.engine.equals();
 				} else if (command.equals("C")) {
 					ExtendedCalculator.this.engine.clear();
-				}
-
-				else if (command.equals("*")) {
+				} else if (command.equals("*")) {
 					ExtendedCalculator.this.engine.multiply();
 				} else if (command.equals("/")) {
 					ExtendedCalculator.this.engine.divide();
 				}
-
 				ExtendedCalculator.this.redisplay();
 			}
 		};
 
 		JPanel contentPane = (JPanel) gui.frame.getContentPane();
-
 		JPanel c = (JPanel) contentPane.getComponent(1);
 		for (Component button : c.getComponents()) {
 			if (button instanceof JButton) {
@@ -184,7 +175,6 @@ public class ExtendedCalculator extends Calculator {
 		JPanel c = (JPanel) contentPane.getComponent(1);
 		for (int i = 0; i < c.getComponentCount(); i++) {
 			JButton jb = (JButton) c.getComponent(i);
-
 			if (isDecimalNumber(jb.getText())) {
 				if (this.mode == CalculatorMode.BINARY) {
 					if (jb.getText().equals("0") || jb.getText().equals("1")) {
@@ -206,17 +196,14 @@ public class ExtendedCalculator extends Calculator {
 	}
 
 	public void setHexaButtonsEnabled() {
-
 		JPanel contentPane = (JPanel) gui.frame.getContentPane();
 
 		JPanel c = (JPanel) contentPane.getComponent(3);
 		for (Component button : c.getComponents()) {
 			if (button instanceof JButton) {
 				button.setEnabled(this.mode.equals(CalculatorMode.HEXA));
-
 			}
 		}
-
 	}
 
 	public int hexaToDecimal(String hexa) {
@@ -275,7 +262,6 @@ public class ExtendedCalculator extends Calculator {
 				engine.buildingDisplayValue = true;
 			}
 			break;
-
 		default:
 			break;
 		}
@@ -295,9 +281,7 @@ public class ExtendedCalculator extends Calculator {
 		case BINARY:
 			gui.display.setText("" + decimalToBinary(this.engine.getDisplayValue()));
 			break;
-
 		default:
-
 			break;
 
 		}

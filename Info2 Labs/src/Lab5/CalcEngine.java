@@ -71,13 +71,13 @@ public class CalcEngine
         applyOperator('-');
     }
     
-    public void multiply() {
-    	applyOperator('*');
-    }
-    
-    public void divide() {
-    	applyOperator('/');
-    }
+	public void multiply() {
+		applyOperator('*');
+	}
+	
+	public void divide() {
+		applyOperator('/');
+	}
     
     /**
      * The '=' button was pressed.
@@ -157,20 +157,20 @@ public class CalcEngine
                 haveLeftOperand = true;
                 leftOperand = displayValue;
                 break;
-            case '*':
-                displayValue = leftOperand * displayValue;
-                haveLeftOperand = true;
-                leftOperand = displayValue;
-                break;
-            case '/':
-            	if(displayValue == 0) {
-            		keySequenceError();
-            	}else {
-            		displayValue = leftOperand / displayValue;
-            		haveLeftOperand = true;
-            		leftOperand = displayValue;            		
-            	}
-                break;
+		case '*':
+        displayValue = leftOperand * displayValue;
+        haveLeftOperand = true;
+        leftOperand = displayValue;
+        break;
+    case '/':
+    	if(displayValue == 0) {
+    		keySequenceError();
+    	}else {
+    		displayValue = leftOperand / displayValue;
+    		haveLeftOperand = true;
+    		leftOperand = displayValue;            		
+    	}
+        break;
             default:
                 keySequenceError();
                 break;
