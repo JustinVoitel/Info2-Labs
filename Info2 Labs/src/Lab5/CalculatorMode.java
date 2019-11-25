@@ -2,5 +2,7 @@ package Lab5;
 
 public enum CalculatorMode {
 	DECIMAL,
-	HEXA
+	HEXA,
+	OCTAL,
+	BINARY
 }
