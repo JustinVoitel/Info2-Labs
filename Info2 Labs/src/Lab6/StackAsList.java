@@ -35,17 +35,20 @@ public class StackAsList<T> implements ADTStack<T> {
 			top = node;
 		}else {
 			node.next = this.top;
-			//Node tempNode = this.top;
 			this.top = node;
 		}
 	}
 
 	@Override
 	public T pop() throws Underflow {
-		T value = this.top.value;
-		top = top.next;
-		
-		return value;
+		if(top == null) {
+			throw new Underflow();
+		}else {
+			T value = this.top.value;
+			top = top.next;
+			
+			return value;
+		}
 	}
 
 	@Override
@@ -79,9 +82,9 @@ public class StackAsList<T> implements ADTStack<T> {
 	}
 	
 	
-	public class Node{
+	private class Node{
 		T value;
-		Node next = null;
+		Node next;
 		
 		public Node(T value) {
 			this.value = value;
