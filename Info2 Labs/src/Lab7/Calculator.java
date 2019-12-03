@@ -1,7 +1,7 @@
-package Lab5;
+package Lab7;
 
 public class Calculator {
-	public CalcEngine engine;
+	protected CalcEngine engine;
 	protected UserInterface gui;
 
 	/**
