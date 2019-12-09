@@ -107,7 +107,8 @@ public class Postfix {
 					stack.push(lhs * rhs);
 					break;
 				case '/':
-					stack.push(lhs / rhs);
+					//System.out.println((double)Math.round(lhs / rhs));
+					stack.push((int) Math.round((double)lhs / rhs));
 					break;
 				case '^':
 					stack.push((int)(Math.pow(lhs, rhs)));

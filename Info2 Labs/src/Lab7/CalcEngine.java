@@ -3,7 +3,6 @@ package Lab7;
 
 public class CalcEngine {
 	
-	protected CalculatorMode mode;
 
 
 	protected Boolean isLastOperator = true;
@@ -60,10 +59,10 @@ public class CalcEngine {
 				this.isLastOperator = true;
 
 			} else {
-				System.out.println(this.displayValue.toString());
+				//System.out.println(this.displayValue.toString());
 				String postFix = p.infixToPostfix(displayValue);
 				this.displayValue = String.valueOf(p.evaluate(postFix));
-				System.out.println("post eval:" +this.displayValue);
+				//System.out.println("post eval:" +this.displayValue);
 				this.isLastOperator = true;
 				this.isCalculated = true;
 			}
@@ -81,12 +80,15 @@ public class CalcEngine {
 		
 		if (this.isLastOperator && bracket == '(') {
 			this.displayValue = displayValue.concat(String.valueOf(bracket));
-
-		} else if (!this.isLastOperator && bracket == ')') {
-			this.displayValue = displayValue.concat(String.valueOf(bracket));
-
 		} else {
-			this.keySequenceError();
+			this.keySequenceError("False use of Brackets! Operator before opening bracket");
+		}
+		
+		if (!this.isLastOperator && bracket == ')') {
+			this.displayValue = displayValue.concat(String.valueOf(bracket));
+			
+		} else {
+			this.keySequenceError("False use of Brackets! Number before closing bracket");
 		}
 	}
 
@@ -124,6 +126,12 @@ public class CalcEngine {
 	 */
 	protected void keySequenceError() {
 		System.out.println("A key sequence error has occurred.");
+		// Reset everything.
+		clear();
+	}
+	
+	protected void keySequenceError(String msg) {
+		System.out.println(msg);
 		// Reset everything.
 		clear();
 	}
