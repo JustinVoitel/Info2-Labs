@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import Lab6.Overflow;
-import Lab6.Underflow;
 
 class CalculatorPrefixTest {
 	

@@ -32,8 +32,8 @@ public class Postfix {
 		}
 	}
 
-	private boolean isOperand(char operand) {
-		return Character.isDigit(operand);
+	public boolean isOperand(char operand) {
+		return (Character.isDigit(operand) || String.valueOf(operand).matches("[a-fA-F]")) ;
 	}
 
 	public static Boolean isOperator(char op) {

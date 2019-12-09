@@ -12,16 +12,12 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import Lab6.Overflow;
-import Lab6.Underflow;
-
 public class ExtendedCalculator extends Calculator {
 
-	CalculatorMode mode;
 
 	public ExtendedCalculator() {
 		super();
-		this.mode = CalculatorMode.DECIMAL;
+		this.engine.mode = CalculatorMode.DECIMAL;
 		makeHexaPanel();
 		changeButtonAction();
 	}
@@ -61,7 +57,7 @@ public class ExtendedCalculator extends Calculator {
 		for (String caption : buttons) {
 			JButton button = new JButton(caption);
 			button.addActionListener(action);
-			button.setEnabled(this.mode.equals(CalculatorMode.HEXA));
+			button.setEnabled(this.engine.mode.equals(CalculatorMode.HEXA));
 			ctn.add(button);
 		}
 	}
@@ -80,13 +76,13 @@ public class ExtendedCalculator extends Calculator {
 				String cmd = e.getActionCommand();
 
 				if (cmd.equals(CalculatorMode.DECIMAL.toString())) {
-					ExtendedCalculator.this.mode = CalculatorMode.DECIMAL;
+					ExtendedCalculator.this.engine.mode = CalculatorMode.DECIMAL;
 				} else if (cmd.equals(CalculatorMode.HEXA.toString())) {
-					ExtendedCalculator.this.mode = CalculatorMode.HEXA;
+					ExtendedCalculator.this.engine.mode = CalculatorMode.HEXA;
 				} else if (cmd.equals(CalculatorMode.OCTAL.toString())) {
-					ExtendedCalculator.this.mode = CalculatorMode.OCTAL;
+					ExtendedCalculator.this.engine.mode = CalculatorMode.OCTAL;
 				} else if (cmd.equals(CalculatorMode.BINARY.toString())) {
-					ExtendedCalculator.this.mode = CalculatorMode.BINARY;
+					ExtendedCalculator.this.engine.mode = CalculatorMode.BINARY;
 				}
 
 				ExtendedCalculator.this.setHexaButtonsEnabled();
@@ -142,46 +138,45 @@ public class ExtendedCalculator extends Calculator {
 			public void actionPerformed(ActionEvent e) {
 				String command = e.getActionCommand();
 
-				if (isDecimalNumber(command)) {
+				if (ExtendedCalculator.this.isDecimalNumber(command)) {
 					ExtendedCalculator.this.numberPressed(command);
-				} else if (command.equals("+")) {
+				} else {
 					try {
-						ExtendedCalculator.this.engine.operatorPressed('+');
-					} catch (Overflow | Underflow e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				} else if (command.equals("-")) {
-					try {
-						ExtendedCalculator.this.engine.operatorPressed('-');
-					} catch (Overflow | Underflow e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				} else if (command.equals("=")) {
-					try {
-						ExtendedCalculator.this.engine.operatorPressed('=');
-					} catch (Overflow | Underflow e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				} else if (command.equals("C")) {
-					ExtendedCalculator.this.engine.clear();
-				} else if (command.equals("*")) {
-					try {
-						ExtendedCalculator.this.engine.operatorPressed('*');
-					} catch (Overflow | Underflow e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				} else if (command.equals("/")) {
-					try {
-						ExtendedCalculator.this.engine.operatorPressed('/');
-					} catch (Overflow | Underflow e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						switch (command) {
+						case "+":
+							ExtendedCalculator.this.engine.operatorPressed('+');
+							break;
+						case "-":
+							ExtendedCalculator.this.engine.operatorPressed('-');
+							break;
+						case "=":
+							ExtendedCalculator.this.engine.operatorPressed('=');
+							break;
+						case "C":
+							ExtendedCalculator.this.engine.clear();
+							break;
+						case "*":
+							ExtendedCalculator.this.engine.operatorPressed('*');
+							break;
+						case "/":
+							ExtendedCalculator.this.engine.operatorPressed('/');
+							break;
+						case "(":
+							ExtendedCalculator.this.engine.bracketPressed('(');
+							break;
+						case ")":
+							ExtendedCalculator.this.engine.bracketPressed(')');
+							break;
+						default:
+							ExtendedCalculator.this.engine.keySequenceError();
+							break;
+						}
+					} catch (Exception e2) {
+						System.out.println("err");
+						ExtendedCalculator.this.engine.keySequenceError();
 					}
 				}
+
 				ExtendedCalculator.this.redisplay();
 			}
 		};
@@ -204,13 +199,13 @@ public class ExtendedCalculator extends Calculator {
 		for (int i = 0; i < c.getComponentCount(); i++) {
 			JButton jb = (JButton) c.getComponent(i);
 			if (isDecimalNumber(jb.getText())) {
-				if (this.mode == CalculatorMode.BINARY) {
+				if (this.engine.mode == CalculatorMode.BINARY) {
 					if (jb.getText().equals("0") || jb.getText().equals("1")) {
 						jb.setEnabled(true);
 					} else {
 						jb.setEnabled(false);
 					}
-				} else if (this.mode == CalculatorMode.OCTAL) {
+				} else if (this.engine.mode == CalculatorMode.OCTAL) {
 					if (jb.getText().equals("8") || jb.getText().equals("9")) {
 						jb.setEnabled(false);
 					} else {
@@ -229,86 +224,88 @@ public class ExtendedCalculator extends Calculator {
 		JPanel c = (JPanel) contentPane.getComponent(3);
 		for (Component button : c.getComponents()) {
 			if (button instanceof JButton) {
-				button.setEnabled(this.mode.equals(CalculatorMode.HEXA));
+				button.setEnabled(this.engine.mode.equals(CalculatorMode.HEXA));
 			}
 		}
 	}
 
-	public int hexaToDecimal(String hexa) {
-		return Integer.parseInt(hexa, 16);
-	}
 
-	public String decimalToHexa(int decimal) {
-		return Integer.toHexString(decimal);
-	}
+	//translates decimal infix 
+	public String parseInfix(String infix, int radix) {
+		//System.out.println("infix: "+infix);
+		char[] chars = infix.toCharArray();
+		String result = "";
+		
+		for(int i = 0; i<chars.length;i++) {
+			//check if char is digit
+			
+			
+			if(this.engine.p.isOperand(chars[i])) {
+				String number = String.valueOf(chars[i]);
+				
+				//check if also next char is digit -> for hexa a-f
+				if(i<chars.length-1 &&  this.engine.p.isOperand(chars[i+1])) {
+					number += String.valueOf(chars[i+1]);
+					i++;
+				}
+				
+				switch (radix) {
+				case 16:
+					result += Integer.toHexString(Integer.parseInt(number));
+					break;
+				case 8:
+					result += Integer.toOctalString(Integer.parseInt(number));
+					break;
+				case 2:
+					result += Integer.toBinaryString(Integer.parseInt(number));
+					break;
 
-	public int octalToDecimal(String octal) {
-		return Integer.parseInt(octal, 8);
-	}
-
-	public String decimalToOctal(int decimal) {
-		return Integer.toOctalString(decimal);
-	}
-
-	public int binaryToDecimal(String binary) {
-		return Integer.parseInt(binary, 2);
-	}
-
-	public String decimalToBinary(int decimal) {
-		return Integer.toBinaryString(decimal);
+				default:
+					break;
+				}
+				
+				
+			}else {
+				result += chars[i];
+			}
+		}
+		return result;
 	}
 
 	public void numberPressed(String command) {
-		switch (this.mode) {
+		switch (this.engine.mode) {
 		case DECIMAL:
-			this.engine.numberPressed(command.charAt(0));
+			this.engine.numberPressed(Integer.parseInt(command));
 			break;
-//		case HEXA:
-//			if (engine.buildingDisplayValue) {
-//				String combinedHexa = decimalToHexa(engine.displayValue) + command;
-//				engine.displayValue = hexaToDecimal(combinedHexa);
-//			} else {
-//				engine.displayValue = hexaToDecimal(command);
-//				engine.buildingDisplayValue = true;
-//			}
-//			break;
-//		case OCTAL:
-//			if (engine.buildingDisplayValue) {
-//				String combinedOctal = decimalToOctal(engine.displayValue) + command;
-//				engine.displayValue = octalToDecimal(combinedOctal);
-//			} else {
-//				engine.displayValue = octalToDecimal(command);
-//				engine.buildingDisplayValue = true;
-//			}
-//			break;
-//		case BINARY:
-//			if (engine.buildingDisplayValue) {
-//				String combinedBinary = decimalToBinary(engine.displayValue) + command;
-//				engine.displayValue = binaryToDecimal(combinedBinary);
-//			} else {
-//				engine.displayValue = binaryToDecimal(command);
-//				engine.buildingDisplayValue = true;
-//			}
-//			break;
+		case HEXA:
+			this.engine.numberPressed(Integer.parseInt(command, 16));
+			break;
+
+		case OCTAL:
+			this.engine.numberPressed(Integer.parseInt(command, 8));
+			break;
+		case BINARY:
+			this.engine.numberPressed(Integer.parseInt(command, 2));
+			break;
 		default:
 			break;
 		}
 	}
 
 	public void redisplay() {
-		switch (this.mode) {
+		switch (this.engine.mode) {
 		case DECIMAL:
 			gui.display.setText("" + this.engine.getDisplayValue());
 			break;
-//		case HEXA:
-//			gui.display.setText("" + decimalToHexa(this.engine.getDisplayValue()).toUpperCase());
-//			break;
-//		case OCTAL:
-//			gui.display.setText("" + decimalToOctal(this.engine.getDisplayValue()));
-//			break;
-//		case BINARY:
-//			gui.display.setText("" + decimalToBinary(this.engine.getDisplayValue()));
-//			break;
+		case HEXA:
+			gui.display.setText("" + this.parseInfix(this.engine.getDisplayValue(), 16));
+			break;
+		case OCTAL:
+			gui.display.setText("" + this.parseInfix(this.engine.getDisplayValue(), 8));
+			break;
+		case BINARY:
+			gui.display.setText("" + this.parseInfix(this.engine.getDisplayValue(), 2));
+			break;
 		default:
 			break;
 
