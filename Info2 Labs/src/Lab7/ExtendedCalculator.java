@@ -13,11 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 public class ExtendedCalculator extends Calculator {
+	protected CalculatorMode mode;
 
 
 	public ExtendedCalculator() {
 		super();
-		this.engine.mode = CalculatorMode.DECIMAL;
+		this.mode = CalculatorMode.DECIMAL;
 		makeHexaPanel();
 		changeButtonAction();
 	}
@@ -57,7 +58,7 @@ public class ExtendedCalculator extends Calculator {
 		for (String caption : buttons) {
 			JButton button = new JButton(caption);
 			button.addActionListener(action);
-			button.setEnabled(this.engine.mode.equals(CalculatorMode.HEXA));
+			button.setEnabled(this.mode.equals(CalculatorMode.HEXA));
 			ctn.add(button);
 		}
 	}
@@ -76,13 +77,13 @@ public class ExtendedCalculator extends Calculator {
 				String cmd = e.getActionCommand();
 
 				if (cmd.equals(CalculatorMode.DECIMAL.toString())) {
-					ExtendedCalculator.this.engine.mode = CalculatorMode.DECIMAL;
+					ExtendedCalculator.this.mode = CalculatorMode.DECIMAL;
 				} else if (cmd.equals(CalculatorMode.HEXA.toString())) {
-					ExtendedCalculator.this.engine.mode = CalculatorMode.HEXA;
+					ExtendedCalculator.this.mode = CalculatorMode.HEXA;
 				} else if (cmd.equals(CalculatorMode.OCTAL.toString())) {
-					ExtendedCalculator.this.engine.mode = CalculatorMode.OCTAL;
+					ExtendedCalculator.this.mode = CalculatorMode.OCTAL;
 				} else if (cmd.equals(CalculatorMode.BINARY.toString())) {
-					ExtendedCalculator.this.engine.mode = CalculatorMode.BINARY;
+					ExtendedCalculator.this.mode = CalculatorMode.BINARY;
 				}
 
 				ExtendedCalculator.this.setHexaButtonsEnabled();
@@ -199,13 +200,13 @@ public class ExtendedCalculator extends Calculator {
 		for (int i = 0; i < c.getComponentCount(); i++) {
 			JButton jb = (JButton) c.getComponent(i);
 			if (isDecimalNumber(jb.getText())) {
-				if (this.engine.mode == CalculatorMode.BINARY) {
+				if (this.mode == CalculatorMode.BINARY) {
 					if (jb.getText().equals("0") || jb.getText().equals("1")) {
 						jb.setEnabled(true);
 					} else {
 						jb.setEnabled(false);
 					}
-				} else if (this.engine.mode == CalculatorMode.OCTAL) {
+				} else if (this.mode == CalculatorMode.OCTAL) {
 					if (jb.getText().equals("8") || jb.getText().equals("9")) {
 						jb.setEnabled(false);
 					} else {
@@ -224,7 +225,7 @@ public class ExtendedCalculator extends Calculator {
 		JPanel c = (JPanel) contentPane.getComponent(3);
 		for (Component button : c.getComponents()) {
 			if (button instanceof JButton) {
-				button.setEnabled(this.engine.mode.equals(CalculatorMode.HEXA));
+				button.setEnabled(this.mode.equals(CalculatorMode.HEXA));
 			}
 		}
 	}
@@ -235,11 +236,9 @@ public class ExtendedCalculator extends Calculator {
 		//System.out.println("infix: "+infix);
 		char[] chars = infix.toCharArray();
 		String result = "";
-		
+	
 		for(int i = 0; i<chars.length;i++) {
 			//check if char is digit
-			
-			
 			if(this.engine.p.isOperand(chars[i])) {
 				String number = String.valueOf(chars[i]);
 				
@@ -273,7 +272,7 @@ public class ExtendedCalculator extends Calculator {
 	}
 
 	public void numberPressed(String command) {
-		switch (this.engine.mode) {
+		switch (this.mode) {
 		case DECIMAL:
 			this.engine.numberPressed(Integer.parseInt(command));
 			break;
@@ -293,7 +292,7 @@ public class ExtendedCalculator extends Calculator {
 	}
 
 	public void redisplay() {
-		switch (this.engine.mode) {
+		switch (this.mode) {
 		case DECIMAL:
 			gui.display.setText("" + this.engine.getDisplayValue());
 			break;
