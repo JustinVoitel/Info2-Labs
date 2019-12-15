@@ -1,9 +1,8 @@
 package Lab8;
-
-import java.util.LinkedList;
+import java.util.*;
 
 public class Set<T> implements SetInterface<T> {
-
+	//private static final int new HashSet = 0;
 	private LinkedList<T> mySet;
 	
 	public Set() {
@@ -12,92 +11,175 @@ public class Set<T> implements SetInterface<T> {
 	}
 	
 	public static void main(String[] args) {
-		// Test addElement
-		Set<Integer> s = new Set<Integer>();
-		s.addElement(10);
-		s.addElement(101);
-		s.print();
-		// Test addAll
+		
+		System.out.println("Test add element, add 10, 101 to s1");
+		Set<Integer> s1 = new Set<Integer>();
+		s1.addElement(10);
+		s1.addElement(101);
+		System.out.print("s1: "); System.out.println(s1.print());
+		System.out.println();
+		
+		System.out.println("Test addAll s1 and s2");
 		Set<Integer> s2 = new Set<Integer>();
 
 		s2.addElement(48);
 		s2.addElement(10);
 		
-		Set<Integer> set3 = s.addAll(s2);
+		Set<Integer> s3 = s1.addAll(s2);
 		
-		s.print();
-		s2.print();
-		set3.print();
+		System.out.print("s1: ");System.out.println(s1.print());
+		System.out.print("s2: ");System.out.println(s2.print());
+		System.out.print("s1+s2 = s3 : ");System.out.println(s3.print());
+		System.out.println();
+		
+		System.out.println("Test removeElement 10 from s2");
+		s2.removeElement(10);
+		System.out.print("s2: ");System.out.println(s2.print());
+		System.out.println();
+		
+		System.out.println("Test removeAll elements of s1 from s2");
+		s2.addElement(10);
+		s2.addElement(2);
+		s2.addElement(3);
+		System.out.print("s2: ");System.out.println(s2.print());
+		System.out.print("s1: ");System.out.println(s1.print());
+		Set<Integer> s4 = s2.removeAll(s1);
+		System.out.print("s1-s2 = s4 : ");System.out.println(s4.print());
+		System.out.println();
+		
+		System.out.println("Test intersection of s1 and s3");
+		Set<Integer> s5 = s1.intersection(s3);
+		System.out.print("s1: ");System.out.println(s1.print());
+		System.out.print("s3: ");System.out.println(s3.print());
+		System.out.print("s1 X s3 = s5: ");System.out.println(s5.print());
+	
+		
 	}
-
-	// add an element to the set if it's not contained in the set
-	public void addElement(T element) {
+ 
+	/*
+	 * Add an element to the set if it's not contained in the set and make sure 
+	 * all elements in set are unique
+	 */
+	@Override
+	public Set<T> addElement(T element) {
 		if(!mySet.contains(element)) {
 			mySet.addLast(element);
 		}
+		return this;
 		
 	}
 
-	// adds all elements from the parameter set to the set and make sure the are
-	// unique
+	/*
+	 *  Add all elements from the parameter set to the set 
+	 */
+	@Override
 	public Set<T> addAll(Set<T> set) {
 		
-		Set<T> newSet = new Set<>();
-		for(T element:this.mySet) {
+		Set<T> newSet = new Set<>(); // create a new set represent the result set
+		
+		for(T element:this.mySet) { // iterate itself
 			newSet.addElement(element);
 		}
 		
-		for(int i = 0;i<set.size();i++) {
+		for(int i = 0;i<set.size();i++) { // iterate the parameter set
 			newSet.addElement(set.get(i));
 		}
 		return newSet;
 		
 	}
-
+	/*
+	 *  Get element at index i
+	 */
+	
 	private T get(int i) {
-		// TODO Auto-generated method stub
+		
 		return this.mySet.get(i);
 	}
 
-	// removes an element from this set
+	/*
+	 *  Removes an element from this set if the set contains the element
+	 */
+	@Override
 	public void removeElement(T element) {
-
+		if(mySet.contains(element)) {
+			mySet.remove(element);
+		}
 	}
 
-	// removes all elements from the Set if they are containing in the parameter set
+	/*
+	 *  Removes all elements from the set if they are contained in the parameter set
+	 */
+	@Override
 	public Set<T> removeAll(Set<T> set) {
-
+		Set<T> newSet = new Set<>(); 
+		for(T element:this.mySet) { // iterate itself
+			newSet.addElement(element);
+		}
+		
+		for(int i = 0;i < set.size();i++) { // iterate the parameter set
+			newSet.removeElement(set.get(i));
+		}
+		return newSet;
+		
 	}
-
-	// return the size of set
+ 
+	/*
+	 *  Return the size of set
+	 */
+	@Override
 	public int size() {
 		return this.mySet.size();
 	}
 
-	// check if the element is contained in the set
+	/*
+	 * Check if an element is contained in the set
+	 */
+	@Override
 	public boolean contains(T element) {
-
+		return mySet.contains(element);
 	}
-
-	// intersection of two sets (SCHNITTMENGE)
+	
+	/*
+	 * Find the intersection of two sets (SCHNITTMENGE)
+	 */
+	@Override
 	public Set<T> intersection(Set<T> set) {
-
-	}
-
-	// check if the set is empty
-	public boolean isEmpty() {
-
-	}
-	
-	public void print() {
-		String output = "";
+		Set<T> newSet = new Set<>(); 
 		
-		for(T element: this.mySet) {
-			output += element +" ";
-			
+			for(int i = 0;i<set.size();i++) {
+				T object = set.get(i);
+				if (mySet.contains(object)) {
+					newSet.addElement(object);
+				
+			}
 		}
-		System.out.println(output);
+		return newSet;
 	}
-	
+
+	@Override
+	public String print() {
+		String output = "{";
+		HashSet<String> newSet = new HashSet<>(); 
+		for(T element: this.mySet) {
+			newSet.add(element.toString());
+		}
+		 // Convert the Set of String to String 
+        String string = String.join(",", newSet);
+		
+		output += string + "}";
+		
+		return output;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.mySet.size()==0;
+	}
+
+	@Override
+	public void empty() {
+		this.mySet.clear();
+		
+	}
 
 }

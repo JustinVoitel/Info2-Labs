@@ -2,15 +2,15 @@ package Lab8;
 
 public interface SetInterface<T> {
 	//add an element to the set if it's not contained in the set
-	public void addElement(T element);
+	public Set<T> addElement(T element);
 	
-	//adds all elements from the parameter set to the set and make sure the are unique
+	//adds all elements from the parameter set to the set and make sure they are unique
 	public Set<T> addAll(Set<T> set);
 	
 	//removes an element from this set
 	public void removeElement(T element);
 	
-	// removes all elements from the Set if they are containing in the parameter set
+	// removes all elements from the Set if they are contained in the parameter set
 	public Set<T> removeAll(Set<T> set);
 	
 	//return the size of set
@@ -25,6 +25,9 @@ public interface SetInterface<T> {
 	// check if the set is empty
 	public boolean isEmpty();
 	
-	//prints the set
-	public void print();
+	// empties the set
+	public void empty();
+	
+	// prints the elements of the set
+	public String print();
 }
