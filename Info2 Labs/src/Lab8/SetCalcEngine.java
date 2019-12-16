@@ -1,5 +1,7 @@
 package Lab8;
 
+import java.util.Stack;
+
 /**
 * The main part of the calculator doing the calculations.
 * 
@@ -142,6 +144,33 @@ public class SetCalcEngine
 		displayValue = Integer.toString(set.size());
     }
     
+    public boolean validateInput(String input) {
+    	boolean isValid = true;
+    	//check if brackets are correct
+    	char[] chars = input.toCharArray();
+    	Stack<Character> s = new Stack<>();
+    	
+    	try {
+    		for(char c : chars) {
+    			if(c == '{') {
+    				s.push('{');
+    			}else if(c == '}') {
+    				s.pop();
+    			}
+    		}
+    		
+    		if(!s.isEmpty()) {
+    			isValid = false;
+    			this.keySequenceError("Curly Brackets are not valid.");
+    		}
+		} catch (Exception e) {
+			isValid = false;
+			this.keySequenceError("Curly Brackets are not valid.");
+		}
+    	
+    	return isValid;
+    }
+    
     
     /**
      * Calculate the result
@@ -154,7 +183,8 @@ public class SetCalcEngine
     {    
     	String input = getDisplayValue();
     	
-    	switch (getOperator()) {
+    	if(validateInput(input)) {
+    		switch (getOperator()) {
     		case '+':
     			union(input);
     			break;
@@ -164,8 +194,8 @@ public class SetCalcEngine
     		case 'X':
     			intersection(input);
     			break;
+    		}
     	}
-    		
     }
 
 	public Set<Integer> getLeftOperand() {
@@ -175,7 +205,9 @@ public class SetCalcEngine
 	public void setLeftOperand(String leftString) {
 		String[] inputArray = leftString.substring(1, leftString.indexOf("}")).split(",");
 		for (String i : inputArray) {
-			leftOperand.addElement(Integer.valueOf(i));
+			if(!i.equals("")) {
+				leftOperand.addElement(Integer.valueOf(i));				
+			}
 		}
 	}
 
@@ -186,7 +218,9 @@ public class SetCalcEngine
 	public void setRightOperand(String rightString) {
 		String[] rightArray = rightString.substring(rightString.indexOf(getOperator())+2, rightString.length()-2).split(",");
     	for (String j : rightArray) {
-			rightOperand.addElement(Integer.valueOf(j));
+    		if(!j.equals("")) {
+    			rightOperand.addElement(Integer.valueOf(j));    			
+    		}
 		}
 	}
 
@@ -204,6 +238,10 @@ public class SetCalcEngine
 
 	public void setResult(Set<Integer> result) {
 		this.result = result;
+	}
+	
+	public void keySequenceError(String msg) {
+		System.out.println("Error: "+msg);
 	}
 
 } 
